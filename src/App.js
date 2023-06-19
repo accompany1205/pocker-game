@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 const symbols = [
   { label: "spades", symbol: "♠" },
@@ -7,23 +7,6 @@ const symbols = [
   { label: "clubs", symbol: "♣" },
 ];
 
-function getSymbol(label) {
-  let result = symbols.find((symbol) => symbol.label === label);
-  return result ? result.symbol : label;
-}
-
-function shuffle(cards) {
-  let newOrder = [1, 2, 3, 4].sort(() => Math.random() - 0.5);
-  return cards.map((card, index) => ({ ...card, id: newOrder[index] }));
-}
-
-function Card({ label, open, onClick }) {
-  return (
-    <div className={`card ${open ? "open" : ""}`} onClick={onClick}>
-      <span>{getSymbol(label)}</span>
-    </div>
-  );
-}
 
 const defaultCardData = [
   {
@@ -48,6 +31,10 @@ const defaultCardData = [
   },
 ];
 
+const sleep = (sec) => {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
 function App() {
   const [cards, setCards] = useState(defaultCardData);
   const [state, setState] = useState("Press the card to start a new game!");
@@ -56,24 +43,34 @@ function App() {
   const [mode, setMode] = useState("");
   const [count, setCount] = useState(0);
 
-  function turnAllCard(state) {
-    setCards(cards.map((card) => ({ ...card, open: state })));
+  const turnAllCard = (state) => {
+    setCards(cards?.map((card) => ({ ...card, open: state })));
   }
 
-  let startShuffle = () => {
-    let newCards = shuffle(cards);
-    setCards(newCards);
-    if (count < 6) {
-      setTimeout(() => setCount(count + 1), 300);
-    } else {
-      setState(`Please pick out ${question.label} ${getSymbol(question.label)}!!`);
-      setMode("answer");
+  
+  const getSymbol = (label) => {
+    let result = symbols.find((symbol) => symbol.label === label);
+    return result ? result.symbol : label;
+  }
+
+  const shuffle = () => {
+    let newOrder = [1, 2, 3, 4].sort(() => Math.random() - 0.5);
+    return cards?.map((card, index) => ({ ...card, id: newOrder[index] }));
+  }
+
+  const startShuffle = async (newQuestion) => {
+    for (var i = 0; i < 6; i++) {
+      setCards(() => shuffle());    
+      setCount((prev) => prev + 1);
+      await sleep(0.3);
     }
+    setState(`Please pick out ${newQuestion.label} ${getSymbol(newQuestion.label)}!!`);
+    setMode("answer");
   };
 
-  function startGame() {
+  const startGame = () => {
     setMode("startgame");
-    let newQuestion = symbols[parseInt(Math.random() * 3)];
+    let newQuestion = symbols[parseInt(Math.random() % 3)];
     setQuestion(newQuestion);
     turnAllCard(false);
     setGather(true);
@@ -93,22 +90,22 @@ function App() {
 
     setCount(0);
     setTimeout(() => {
-      startShuffle();
+      startShuffle(newQuestion);
     }, 6000);
   }
 
-  function openCard(card) {
+  const openCard = (card) => {
     if (mode === "") startGame();
     if (mode !== "answer") return;
-    let newCards = cards.map((c) => (c.id === card.id ? { ...c, open: !c.open } : c));
+    let newCards = cards?.map((c) => (c.id === card.id ? { ...c, open: !c.open } : c));
     setCards(newCards);
     if (card.label === question.label) {
       setState(`🤙🤙🤙🦀  You get the ${question.label} ${getSymbol(question.label)}!!!  🦀🤟🤟🤟`);
     } else {
       setState("👎👎👎🐧 You lose!!! 🐧 👎👎👎");
-      let card = cards.find((c) => c.label === question.label);
+      let card = cards?.find((c) => c.label === question.label);
       setTimeout(() => {
-        let newCards = cards.map((c) => (c.id === card.id ? { ...c, open: true } : c));
+        let newCards = cards?.map((c) => (c.id === card.id ? { ...c, open: true } : c));
         setCards(newCards);
       }, 1000);
     }
@@ -117,11 +114,34 @@ function App() {
 
 
   return (
-    <div className="App">
-      {cards.map((card) => (
-        <Card key={card.id} label={card.label} open={card.open} onClick={() => openCard(card)} />
-      ))}
-      <div className={`state ${gather ? "gather" : ""}`}>{state}</div>
+    <div className="control">
+        <div className="btnContainer">
+          <div className="gather">
+            <input type="checkbox" id="gatherControl" checked={gather} onChange={(e) => setGather(e.target.checked)} />
+            <label htmlFor="gatherControl">Gather</label>
+          </div>
+          <button onClick={() => shuffle()}>Shuffle</button>
+          <button onClick={startGame}>Start Game</button>
+        </div>
+      <div>
+        <p className="state">{state}</p>
+      </div>
+      <div>
+        <ul className={`cards ${gather ? 'gather' : ''}`}>
+          {cards?.map((card) => (
+            <li
+              className={`card ${card.open ? 'open' : ''}`}
+              data-order={card.id}
+              key={card.label}
+              onClick={() => openCard(card)}
+            >
+              <div className="face back"></div>
+              <div className="face front">{getSymbol(card.label)}</div>
+              <p style={{ display: 'absolute', zIndex: 999 }}>{card.id}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
