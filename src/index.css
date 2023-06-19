@@ -5,9 +5,158 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+    background-color: #282f38;
+  /* justify-content: center; */
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.cards {
+  list-style: none;
+  transition: 0.8s;
+  perspective: 800px;
+  margin: 0 auto;
+  width: 100vw;
+  height: 40vh;
+}
+
+.cards .card {
+  width: 15vw;
+  height: 21vw;
+  background-color: #fff;
+  position: absolute;
+  top: 35%;
+  left: calc(50% - 7.5vw);
+  border-radius: 5px;
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.24);
+  transform-style: preserve-3d;
+  transition: left 0.5s, top 0.5s, transform 0.8s;
+  cursor: pointer;
+}
+
+.cards .card .face {
+  background-color: #fff;
+  color: #111;
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  backface-visibility: hidden;
+}
+
+.cards .card .face.front {
+  transform: rotateY(180deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+}
+
+.cards .card .face.back::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 10px;
+  border: 3px solid #ed4747;
+  background-image: linear-gradient(-60deg, transparent 40%, #ed4747 40%, #ed4747 60%, transparent 60%), linear-gradient(60deg, transparent 40%, #ed4747 40%, #ed4747 60%, transparent 60%);
+  background-size: 8px 8px;
+}
+
+.cards .card.open {
+  transform: rotateY(180deg);
+}
+
+.cards .card:hover {
+  top: 30%;
+}
+
+.cards .card[data-order="1"] {
+  left: calc(20% - 7.5vw / 2);
+}
+
+.cards .card[data-order="2"] {
+  left: calc(40% - 7.5vw / 2);
+}
+
+.cards .card[data-order="3"] {
+  left: calc(60% - 7.5vw / 2);
+}
+
+.cards .card[data-order="4"] {
+  left: calc(80% - 7.5vw / 2);
+}
+
+.cards.gather {
+  cursor: pointer;
+  width: calc(15vw + 8rem);
+}
+
+.cards.gather .card {
+  left: calc(50% - 7.5vw / 2);
+  top: 20%;
+  transform: rotate(360deg);
+}
+
+.cards.gather:hover .card[data-order="1"] {
+  transform: rotate(355deg);
+}
+
+.cards.gather:hover .card[data-order="2"] {
+  transform: rotate(360deg);
+}
+
+.gather {
+  color: #fff;
+}
+
+.cards.gather:hover .card[data-order="3"] {
+  transform: rotate(5deg);
+}
+
+.cards.gather:hover .card[data-order="4"] {
+  transform: rotate(10deg);
+}
+
+p.state {
+  text-align: center;
+  font-size: clamp(1.2rem, 2.4vw, 2.4rem);
+  color: #fff;
+}
+
+.control {
+  margin-top: 2rem;
+  display: flow-root;
+  justify-content: center;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.control .btnContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.control .btnContainer button {
+  display: block;
+  padding: 0.24rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  background-color: #9ace98;
+}
+
+.control .btnContainer button:active {
+  transform: translateY(0.24rem);
 }
