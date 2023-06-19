@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState } from "react";
 
 const symbols = [
   { label: "spades", symbol: "♠" },
@@ -41,7 +41,6 @@ function App() {
   const [gather, setGather] = useState(true);
   const [question, setQuestion] = useState(null);
   const [mode, setMode] = useState("");
-  const [count, setCount] = useState(0);
 
   const turnAllCard = (state) => {
     setCards(cards?.map((card) => ({ ...card, open: state })));
@@ -61,7 +60,6 @@ function App() {
   const startShuffle = async (newQuestion) => {
     for (var i = 0; i < 6; i++) {
       setCards(() => shuffle());    
-      setCount((prev) => prev + 1);
       await sleep(0.3);
     }
     setState(`Please pick out ${newQuestion.label} ${getSymbol(newQuestion.label)}!!`);
@@ -88,7 +86,6 @@ function App() {
       setState(`Get Ready...`);
     }, 4000);
 
-    setCount(0);
     setTimeout(() => {
       startShuffle(newQuestion);
     }, 6000);
@@ -111,6 +108,7 @@ function App() {
     }
     setTimeout(startGame, 3000);
   }
+
 
 
   return (
@@ -136,8 +134,16 @@ function App() {
               onClick={() => openCard(card)}
             >
               <div className="face back"></div>
-              <div className="face front">{getSymbol(card.label)}</div>
-              <p style={{ display: 'absolute', zIndex: 999 }}>{card.id}</p>
+              {
+                card.open ? (
+                  <>
+                    <div className="face front">{getSymbol(card.label)}</div>
+                    <p style={{ display: 'absolute', zIndex: 999 }}>{card.id}</p>
+                  </>
+                ) : (
+                  <></>              
+                )
+              }
             </li>
           ))}
         </ul>
@@ -147,3 +153,4 @@ function App() {
 }
 
 export default App;
+ 
