@@ -129,7 +129,6 @@ function App() {
           {cards?.map((card) => (
             <li
               className={`card ${card.open ? 'open' : ''}`}
-              data-order={card.id}
               key={card.label}
               onClick={() => openCard(card)}
             >

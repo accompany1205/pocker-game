@@ -79,19 +79,19 @@ code {
   top: 30%;
 }
 
-.cards .card[data-order="1"] {
+.cards .card:first-of-type {
   left: calc(20% - 7.5vw / 2);
 }
 
-.cards .card[data-order="2"] {
+.cards .card:nth-of-type(2) {
   left: calc(40% - 7.5vw / 2);
 }
 
-.cards .card[data-order="3"] {
+.cards .card:nth-of-type(3) {
   left: calc(60% - 7.5vw / 2);
 }
 
-.cards .card[data-order="4"] {
+.cards .card:nth-of-type(4) {
   left: calc(80% - 7.5vw / 2);
 }
 
@@ -106,11 +106,11 @@ code {
   transform: rotate(360deg);
 }
 
-.cards.gather:hover .card[data-order="1"] {
+.cards.gather:hover .card:first-of-type {
   transform: rotate(355deg);
 }
 
-.cards.gather:hover .card[data-order="2"] {
+.cards.gather:hover .card:nth-of-type(2) {
   transform: rotate(360deg);
 }
 
@@ -118,11 +118,11 @@ code {
   color: #fff;
 }
 
-.cards.gather:hover .card[data-order="3"] {
+.cards.gather:hover .card:nth-of-type(3) {
   transform: rotate(5deg);
 }
 
-.cards.gather:hover .card[data-order="4"] {
+.cards.gather:hover .card:nth-of-type(4) {
   transform: rotate(10deg);
 }
 
