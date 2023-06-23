@@ -85,8 +85,9 @@ function App() {
 
   const startGame = () => {
     setMode("startgame");
-    let newQuestion = symbols[parseInt(Math.random() % 3)];
-    setQuestion(newQuestion);
+    let newQuestion = symbols[Math.floor(Math.random()*10) % 4];
+    console.log({newQuestion});
+    setQuestion(()=>newQuestion);
     turnAllCard(false);
     setGather(true);
     setState("Ready...");
