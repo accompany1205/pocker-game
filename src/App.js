@@ -57,7 +57,7 @@ function App() {
     console.log({ cards });
     setCards(_cards => {
       let newCards = _cards?.map((card, index) => ({ ...card, label: _cards[array[index] - 1].label }));
-      console.log({ newCards });
+      // console.log({ newCards });
       return newCards;
     })
     console.log({ cards });
