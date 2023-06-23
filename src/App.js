@@ -46,17 +46,22 @@ function App() {
     setCards(cards?.map((card) => ({ ...card, open: state })));
   }
 
-  const shuffleArray = () => {
-    let array = [...cards];
+  const shuffleContent = () => {
+    let array = [1,2,3,4];
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];  // Swap elements
       // break;
     }
-    // return array;
-    setCards(()=>array);
+    console.log({ array });
+    console.log({ cards });
+    setCards(_cards => { 
+      let newCards = _cards?.map((card, index) => ({ ...card, label: _cards[array[index]-1].label }));
+      console.log({newCards});
+      return newCards;
+    })
+    console.log({ cards });
   }
-
 
   const getSymbol = (label) => {
     let result = symbols.find((symbol) => symbol.label === label);
@@ -64,25 +69,15 @@ function App() {
   }
 
   const shuffle = () => {
-    // let newOrder = [1, 2, 3, 4].sort(() => Math.random() - 0.5);
-    let newOrder = shuffleArray();
-    console.log({newOrder});
-
-    // return cards?.map((card, index) => ({ ...card, id: newOrder[index] }));
-    return [
-      {...cards[newOrder[0]-1]},
-      {...cards[newOrder[1]-1]},
-      {...cards[newOrder[2]-1]},
-      {...cards[newOrder[3]-1]},
-    ]
-    // console.log({newOrder})
+    let newOrder = [1, 2, 3, 4].sort(() => Math.random() - 0.5);
+    return cards?.map((card, index) => ({ ...card, id: newOrder[index] }));
   }
 
   const startShuffle = async (newQuestion) => {
     for (var i = 0; i < 6; i++) {
-      // setCards(() => shuffle());
-      shuffleArray();
-      await sleep(0.5);
+      setCards(() => shuffle());
+      shuffleContent();
+      await sleep(0.3);
     }
     setState(`Please pick out ${newQuestion.label} ${getSymbol(newQuestion.label)}!!`);
     setMode("answer");
@@ -151,6 +146,7 @@ function App() {
           {cards?.map((card) => (
             <li
               className={`card ${card.open ? 'open' : ''}`}
+              data-order={card.id}
               key={card.label}
               onClick={() => openCard(card)}
             >
