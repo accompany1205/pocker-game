@@ -47,7 +47,7 @@ function App() {
   }
 
   const shuffleContent = () => {
-    let array = [1,2,3,4];
+    let array = [1, 2, 3, 4];
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];  // Swap elements
@@ -55,9 +55,9 @@ function App() {
     }
     console.log({ array });
     console.log({ cards });
-    setCards(_cards => { 
-      let newCards = _cards?.map((card, index) => ({ ...card, label: _cards[array[index]-1].label }));
-      console.log({newCards});
+    setCards(_cards => {
+      let newCards = _cards?.map((card, index) => ({ ...card, label: _cards[array[index] - 1].label }));
+      console.log({ newCards });
       return newCards;
     })
     console.log({ cards });
@@ -76,18 +76,19 @@ function App() {
   const startShuffle = async (newQuestion) => {
     for (var i = 0; i < 6; i++) {
       setCards(() => shuffle());
-      shuffleContent();
+
       await sleep(0.3);
     }
+    shuffleContent();
     setState(`Please pick out ${newQuestion.label} ${getSymbol(newQuestion.label)}!!`);
     setMode("answer");
   };
 
   const startGame = () => {
     setMode("startgame");
-    let newQuestion = symbols[Math.floor(Math.random()*10) % 4];
-    console.log({newQuestion});
-    setQuestion(()=>newQuestion);
+    let newQuestion = symbols[Math.floor(Math.random() * 10) % 4];
+    console.log({ newQuestion });
+    setQuestion(() => newQuestion);
     turnAllCard(false);
     setGather(true);
     setState("Ready...");
