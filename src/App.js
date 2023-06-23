@@ -46,21 +46,43 @@ function App() {
     setCards(cards?.map((card) => ({ ...card, open: state })));
   }
 
-  
+  const shuffleArray = () => {
+    let array = [...cards];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];  // Swap elements
+      // break;
+    }
+    // return array;
+    setCards(()=>array);
+  }
+
+
   const getSymbol = (label) => {
     let result = symbols.find((symbol) => symbol.label === label);
     return result ? result.symbol : label;
   }
 
   const shuffle = () => {
-    let newOrder = [1, 2, 3, 4].sort(() => Math.random() - 0.5);
-    return cards?.map((card, index) => ({ ...card, id: newOrder[index] }));
+    // let newOrder = [1, 2, 3, 4].sort(() => Math.random() - 0.5);
+    let newOrder = shuffleArray();
+    console.log({newOrder});
+
+    // return cards?.map((card, index) => ({ ...card, id: newOrder[index] }));
+    return [
+      {...cards[newOrder[0]-1]},
+      {...cards[newOrder[1]-1]},
+      {...cards[newOrder[2]-1]},
+      {...cards[newOrder[3]-1]},
+    ]
+    // console.log({newOrder})
   }
 
   const startShuffle = async (newQuestion) => {
     for (var i = 0; i < 6; i++) {
-      setCards(() => shuffle());    
-      await sleep(0.3);
+      // setCards(() => shuffle());
+      shuffleArray();
+      await sleep(0.5);
     }
     setState(`Please pick out ${newQuestion.label} ${getSymbol(newQuestion.label)}!!`);
     setMode("answer");
@@ -113,14 +135,14 @@ function App() {
 
   return (
     <div className="control">
-        <div className="btnContainer">
-          <div className="gather">
-            <input type="checkbox" id="gatherControl" checked={gather} onChange={(e) => setGather(e.target.checked)} />
-            <label htmlFor="gatherControl">Gather</label>
-          </div>
-          <button onClick={() => shuffle()}>Shuffle</button>
-          <button onClick={startGame}>Start Game</button>
+      <div className="btnContainer">
+        <div className="gather">
+          <input type="checkbox" id="gatherControl" checked={gather} onChange={(e) => setGather(e.target.checked)} />
+          <label htmlFor="gatherControl">Gather</label>
         </div>
+        <button onClick={() => shuffle()}>Shuffle</button>
+        <button onClick={startGame}>Start Game</button>
+      </div>
       <div>
         <p className="state">{state}</p>
       </div>
@@ -140,7 +162,7 @@ function App() {
                     <p style={{ display: 'absolute', zIndex: 999 }}>{card.id}</p>
                   </>
                 ) : (
-                  <></>              
+                  <></>
                 )
               }
             </li>
@@ -152,4 +174,3 @@ function App() {
 }
 
 export default App;
- 
